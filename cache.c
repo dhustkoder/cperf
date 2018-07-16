@@ -88,7 +88,7 @@ static double calculate_oop_klmno(void)
 	return result;
 }
 
-static void calculate_oop_optimized(double* const abcde, double* const fghij, double* const klmno)
+static void calculate_oop_combined(double* const abcde, double* const fghij, double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
 	for (int i = 0; i < BUFFER_SIZE; ++i) {
@@ -147,11 +147,12 @@ int main(void)
 {
 	init_data();
 
-	volatile clock_t begin, end, dod_time, oop_time;
+	volatile clock_t begin, end, dod_time, oop_single_time, oop_combined_time;
 
 	double oop_abcde = 0, oop_fghij = 0, oop_klmno = 0;
 	double dod_abcde = 0, dod_fghij = 0, dod_klmno = 0;
 
+	/* DOD data layout is great if we want to calculate data sets separately */
 	for (int i = 0; i < 255; ++i) {
 		begin = clock();
 		dod_abcde = calculate_dod_abcde();
@@ -160,41 +161,43 @@ int main(void)
 		end = clock();
 		dod_time = end - begin;
 	}
-
-	/*
-
+	
+	/* OOP data layout is bad if we want to calculate data sets separately */
 	for (int i = 0; i < 255; ++i) {
 		begin = clock();
 		oop_abcde = calculate_oop_abcde();
 		oop_fghij = calculate_oop_fghij();
 		oop_klmno = calculate_oop_klmno();
 		end = clock();
-		oop_time = end - begin;
+		oop_single_time = end - begin;
 	}
 
-	*/
+	printf("%lu\n", oop_single_time);
 
 
-	/* optimized OOP data parse */
+	/* but OOP data layout is good if we want that all the data at the same time */
 	for (int i = 0; i < 255; ++i) {
 		begin = clock();
-		calculate_oop_optimized(&oop_abcde, &oop_fghij, &oop_klmno);
+		calculate_oop_combined(&oop_abcde, &oop_fghij, &oop_klmno);
 		end = clock();
-		oop_time = end - begin;
+		oop_combined_time = end - begin;
 	}
 
 
 	printf("OOP ABCDE: %lf\n"
 	       "OOP FGHIJ: %lf\n"
 	       "OOP KLMNO: %lf\n"
-	       "OOP TIME: %lf secs\n"
+	       "OOP SINGLE TIME: %lf secs\n"
+	       "OOP COMBINED TIME: %lf secs\n"
 	       "-----------------------------------\n"
 	       "DOD ABCDE: %lf\n"
 	       "DOD FGHIJ: %lf\n"
 	       "DOD KLMNO: %lf\n"
 	       "DOD TIME: %lf secs\n"
 	       "-----------------------------------\n",
-	       oop_abcde, oop_fghij, oop_klmno, ((double)oop_time / (double)CLOCKS_PER_SEC),
+	       oop_abcde, oop_fghij, oop_klmno, 
+	       ((double)oop_single_time / (double)CLOCKS_PER_SEC),
+	       ((double)oop_combined_time / (double)CLOCKS_PER_SEC),
 	       dod_abcde, dod_fghij, dod_klmno, ((double)dod_time / (double)CLOCKS_PER_SEC));
 
 	free_data();
