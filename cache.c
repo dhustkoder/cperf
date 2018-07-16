@@ -149,8 +149,8 @@ int main(void)
 
 	volatile clock_t begin, end, dod_time, oop_time;
 
-	double oop_abcde, oop_fghij, oop_klmno;
-	double dod_abcde, dod_fghij, dod_klmno;
+	double oop_abcde = 0, oop_fghij = 0, oop_klmno = 0;
+	double dod_abcde = 0, dod_fghij = 0, dod_klmno = 0;
 
 	for (int i = 0; i < 255; ++i) {
 		begin = clock();
