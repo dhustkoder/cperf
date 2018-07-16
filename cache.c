@@ -88,6 +88,20 @@ static double calculate_oop_klmno(void)
 	return result;
 }
 
+static void calculate_oop_optimized(double* const abcde, double* const fghij, double* const klmno)
+{
+	double a = 0, f = 0, k = 0;
+	for (int i = 0; i < BUFFER_SIZE; ++i) {
+		a += oop_data[i].a + oop_data[i].b + oop_data[i].c + oop_data[i].d + oop_data[i].e;
+		f += oop_data[i].f + oop_data[i].g + oop_data[i].h + oop_data[i].i + oop_data[i].j;
+		k += oop_data[i].k + oop_data[i].l + oop_data[i].m + oop_data[i].n + oop_data[i].o;
+	}
+	*abcde = a;
+	*fghij = f;
+	*klmno = k;
+}
+
+
 static double calculate_dod_abcde(void)
 {
 	double result = 0;
@@ -147,6 +161,8 @@ int main(void)
 		dod_time = end - begin;
 	}
 
+	/*
+
 	for (int i = 0; i < 255; ++i) {
 		begin = clock();
 		oop_abcde = calculate_oop_abcde();
@@ -155,6 +171,18 @@ int main(void)
 		end = clock();
 		oop_time = end - begin;
 	}
+
+	*/
+
+
+	/* optimized OOP data parse */
+	for (int i = 0; i < 255; ++i) {
+		begin = clock();
+		calculate_oop_optimized(&oop_abcde, &oop_fghij, &oop_klmno);
+		end = clock();
+		oop_time = end - begin;
+	}
+
 
 	printf("OOP ABCDE: %lf\n"
 	       "OOP FGHIJ: %lf\n"
@@ -170,7 +198,7 @@ int main(void)
 	       dod_abcde, dod_fghij, dod_klmno, ((double)dod_time / (double)CLOCKS_PER_SEC));
 
 	free_data();
-	
+
 	return EXIT_SUCCESS;
 }
 
