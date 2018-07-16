@@ -156,13 +156,22 @@ int main(void)
 		oop_time = end - begin;
 	}
 
-	printf("OOP ABCDE: %lf\nOOP FGHIJ: %lf\nOOP KLMNO: %lf\nOOP TIME: %lf secs\n-----------------------------------\n"
-	       "DOD ABCDE: %lf\nDOD FGHIJ: %lf\nDOD KLMNO: %lf\nDOD TIME: %lf secs\n-----------------------------------\n",
+	printf("OOP ABCDE: %lf\n"
+	       "OOP FGHIJ: %lf\n"
+	       "OOP KLMNO: %lf\n"
+	       "OOP TIME: %lf secs\n"
+	       "-----------------------------------\n"
+	       "DOD ABCDE: %lf\n"
+	       "DOD FGHIJ: %lf\n"
+	       "DOD KLMNO: %lf\n"
+	       "DOD TIME: %lf secs\n"
+	       "-----------------------------------\n",
 	       oop_abcde, oop_fghij, oop_klmno, ((double)oop_time / (double)CLOCKS_PER_SEC),
 	       dod_abcde, dod_fghij, dod_klmno, ((double)dod_time / (double)CLOCKS_PER_SEC));
 
 	free_data();
-	return 0;
+	
+	return EXIT_SUCCESS;
 }
 
 
