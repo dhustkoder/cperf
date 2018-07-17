@@ -7,11 +7,10 @@
 
 
 #define INLINE
-#define BUFFER_SIZE (2048ull * 2048ull)
 
 
 struct thread_arg {
-	double(* const fun)(void);
+	double (*const fun)(void);
 	double* const dest; 
 };
 
@@ -23,47 +22,53 @@ static struct oop_data {
 
 static double* dod_data = NULL;
 
+static unsigned long long BUFFER_SIZE = 0;
 
-static void init_data(void)
+static void alloc_data(unsigned long long buffer_size)
 {
+	BUFFER_SIZE = buffer_size;
 	oop_data = malloc(sizeof(struct oop_data) * BUFFER_SIZE);
 	dod_data = malloc(sizeof(double) * 5 * 3 * BUFFER_SIZE);
-
-	srand(time(NULL));
-	const double randnum = rand();
-
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
-		oop_data[i].a = oop_data[i].b = oop_data[i].c = oop_data[i].d = oop_data[i].e = randnum;
-		oop_data[i].f = oop_data[i].g = oop_data[i].h = oop_data[i].i = oop_data[i].j = randnum * 2;
-		oop_data[i].k = oop_data[i].l = oop_data[i].m = oop_data[i].n = oop_data[i].o = randnum * 3;
-	}
-
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
-		dod_data[i] = randnum;
-		dod_data[i + 1] = randnum;
-		dod_data[i + 2] = randnum;
-		dod_data[i + 3] = randnum;
-		dod_data[i + 4] = randnum;
-
-		dod_data[BUFFER_SIZE * 5 + i] = randnum * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 1] = randnum * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 2] = randnum * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 3] = randnum * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 4] = randnum * 2;
-
-		dod_data[BUFFER_SIZE * 5 * 2 + i] = randnum * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 1] = randnum * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 2] = randnum * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 3] = randnum * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 4] = randnum * 3;
-	}
-
 }
 
 static void free_data(void)
 {
 	free(dod_data);
 	free(oop_data);
+}
+
+static void oop_fill(int base_num)
+{
+
+	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
+		oop_data[i].a = oop_data[i].b = oop_data[i].c = oop_data[i].d = oop_data[i].e = base_num;
+		oop_data[i].f = oop_data[i].g = oop_data[i].h = oop_data[i].i = oop_data[i].j = base_num * 2;
+		oop_data[i].k = oop_data[i].l = oop_data[i].m = oop_data[i].n = oop_data[i].o = base_num * 3;
+	}
+}
+
+static void dod_fill(int base_num)
+{
+	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
+		dod_data[i] = base_num;
+		dod_data[i + 1] = base_num;
+		dod_data[i + 2] = base_num;
+		dod_data[i + 3] = base_num;
+		dod_data[i + 4] = base_num;
+
+		dod_data[BUFFER_SIZE * 5 + i] = base_num * 2;
+		dod_data[BUFFER_SIZE * 5 + i + 1] = base_num * 2;
+		dod_data[BUFFER_SIZE * 5 + i + 2] = base_num * 2;
+		dod_data[BUFFER_SIZE * 5 + i + 3] = base_num * 2;
+		dod_data[BUFFER_SIZE * 5 + i + 4] = base_num * 2;
+
+		dod_data[BUFFER_SIZE * 5 * 2 + i] = base_num * 3;
+		dod_data[BUFFER_SIZE * 5 * 2 + i + 1] = base_num * 3;
+		dod_data[BUFFER_SIZE * 5 * 2 + i + 2] = base_num * 3;
+		dod_data[BUFFER_SIZE * 5 * 2 + i + 3] = base_num * 3;
+		dod_data[BUFFER_SIZE * 5 * 2 + i + 4] = base_num * 3;
+	}
+
 }
 
 static double INLINE calculate_oop_abcde(void)
@@ -97,20 +102,19 @@ static double INLINE calculate_oop_klmno(void)
 }
 
 static void INLINE calculate_oop_combined(double* const abcde,
-                                   double* const fghij,
-                                   double* const klmno)
+                                          double* const fghij,
+                                          double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
 	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
-		a += oop_data[i].a + oop_data[i].b + oop_data[i].c + oop_data[i].d + oop_data[i].e;
-		f += oop_data[i].f + oop_data[i].g + oop_data[i].h + oop_data[i].i + oop_data[i].j;
-		k += oop_data[i].k + oop_data[i].l + oop_data[i].m + oop_data[i].n + oop_data[i].o;
+		a += oop_data[i].a + oop_data[i].f + oop_data[i].k + oop_data[i].b + oop_data[i].g;
+		f += oop_data[i].l + oop_data[i].c + oop_data[i].h + oop_data[i].m + oop_data[i].d;
+		k += oop_data[i].i + oop_data[i].n + oop_data[i].e + oop_data[i].j + oop_data[i].o;
 	}
 	*abcde = a;
 	*fghij = f;
 	*klmno = k;
 }
-
 
 static double INLINE calculate_dod_abcde(void)
 {
@@ -154,24 +158,28 @@ static double INLINE calculate_dod_klmno(void)
 }
 
 static void INLINE calculate_dod_combined(double* const abcde,
-                                   double* const fghij,
-				   double* const klmno)
+                                          double* const fghij,
+                                          double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
 	
 	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
-		a += dod_data[i] + dod_data[i + 1] + dod_data[i + 2] + dod_data[i + 3] + dod_data[i + 4];
+		a += dod_data[i] +
+		     dod_data[BUFFER_SIZE * 5 + i] +
+		     dod_data[BUFFER_SIZE * 5 * 2 + i] +
+		     dod_data[i + 1] +
+		     dod_data[BUFFER_SIZE * 5 + i + 1];
 
-		f += dod_data[BUFFER_SIZE * 5 + i] +
-		     dod_data[BUFFER_SIZE * 5 + i + 1] +
+		f += dod_data[BUFFER_SIZE * 5 * 2 + i + 1] +
+		     dod_data[i + 2] +
 		     dod_data[BUFFER_SIZE * 5 + i + 2] +
-		     dod_data[BUFFER_SIZE * 5 + i + 3] +
-		     dod_data[BUFFER_SIZE * 5 + i + 4];
-
-		k += dod_data[BUFFER_SIZE * 5 * 2 + i] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 1] +
 		     dod_data[BUFFER_SIZE * 5 * 2 + i + 2] +
+		     dod_data[i + 3];
+
+		k += dod_data[BUFFER_SIZE * 5 + i + 3] +
 		     dod_data[BUFFER_SIZE * 5 * 2 + i + 3] +
+		     dod_data[i + 4] +
+		     dod_data[BUFFER_SIZE * 5 + i + 4] +
 		     dod_data[BUFFER_SIZE * 5 * 2 + i + 4];
 	}
 
@@ -206,15 +214,38 @@ static void print_result(const char* const info,
 }
 
 
-int main(void)
+int main(int argc, char** argv)
 {
-	init_data();
+	if (argc < 6) {
+		fprintf(stderr, 
+		        "Usage: %s [oop separately base num] [oop combined base num] "
+		        "[dod separately base num] [dod combined base num] "
+		        "[dod separately multi-thread base num] [buffer size]\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	enum base_nums_index {
+		BN_OOP_SEPARATELY,
+		BN_OOP_COMBINED,
+		BN_DOD_SEPARATELY,
+		BN_DOD_COMBINED,
+		BN_DOD_MULTITHREAD
+	};
+	const int base_nums[] = {
+		[BN_OOP_SEPARATELY] = strtoll(argv[1], NULL, 10),
+		[BN_OOP_COMBINED] = strtoll(argv[2], NULL, 10),
+		[BN_DOD_SEPARATELY] = strtoll(argv[3], NULL, 10),
+		[BN_DOD_COMBINED] = strtoll(argv[4], NULL, 10),
+		[BN_DOD_MULTITHREAD] = strtoll(argv[5], NULL, 10)
+	};
+
+	alloc_data(strtoll(argv[6], NULL, 10));
 
 	volatile clock_t begin, end;
 	double abcde = 0, fghij = 0, klmno = 0;
 
-
 	/* OOP data layout is bad if we want to calculate data sets separately */
+	oop_fill(base_nums[BN_OOP_SEPARATELY]);
 	puts("TESTING OOP SEPARATELY CALCULATION");
 	begin = clock();
 	
@@ -230,6 +261,7 @@ int main(void)
 
 
 	/* but OOP data layout is good if we want all the data at the same time */
+	oop_fill(base_nums[BN_OOP_COMBINED]);
 	puts("TESTING OOP COMBINED CALCULATION");
 	begin = clock();
 	
@@ -240,8 +272,9 @@ int main(void)
 	print_result("OOP COMBINED", abcde, fghij, klmno,
 	             ((double)end - begin) / CLOCKS_PER_SEC);
 
-	
+
 	/* DOD data layout is great if we want to calculate data sets separately */
+	dod_fill(base_nums[BN_DOD_SEPARATELY]);
 	puts("TESTING DOD SEPARATELY CALCULATION");
 	begin = clock();
 
@@ -255,8 +288,8 @@ int main(void)
 	print_result("DOD SEPARATELY", abcde, fghij, klmno,
 	             ((double)end - begin) / CLOCKS_PER_SEC);
 
-
 	/* DOD COMBINED ?? */
+	dod_fill(base_nums[BN_DOD_COMBINED]);
 	puts("TESTING DOD COMBINED CALCULATION");
 	begin = clock();
 
@@ -269,7 +302,8 @@ int main(void)
 
 
 	/* DOD data layout is good for multi-threading */
-	puts("TESTING DOD MULTI-THREADED CALCULATION");
+	dod_fill(base_nums[BN_DOD_MULTITHREAD]);
+	puts("TESTING DOD SEPARATELY MULTI-THREADED CALCULATION");
 	begin = clock();
 
 	pthread_t thrd_abcde, thrd_fghij, thrd_klmno;
@@ -283,7 +317,7 @@ int main(void)
 	pthread_join(thrd_fghij, NULL);
 
 	end = clock();
-	print_result("DOD MULTI-THREADED", abcde, fghij, klmno,
+	print_result("DOD SEPARATELY MULTI-THREADED", abcde, fghij, klmno,
 	             ((double)end - begin) / CLOCKS_PER_SEC);
 
 	free_data();
