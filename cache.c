@@ -192,8 +192,7 @@ static void INLINE calculate_dod_combined(double* const abcde,
 static void* INLINE thread_fun(const struct thread_arg* const ta)
 {
 	double r = 0;
-	for (unsigned long long i = 0; i < 128; ++i)
-		r = ta->fun();
+	r = ta->fun();
 	*ta->dest = r;
 	return NULL;
 }
@@ -249,11 +248,9 @@ int main(int argc, char** argv)
 	puts("TESTING OOP SEPARATELY CALCULATION");
 	begin = clock();
 	
-	for (unsigned long long i = 0; i < 128; ++i) {
-		abcde = calculate_oop_abcde();
-		fghij = calculate_oop_fghij();
-		klmno = calculate_oop_klmno();
-	}
+	abcde = calculate_oop_abcde();
+	fghij = calculate_oop_fghij();
+	klmno = calculate_oop_klmno();
 	
 	end = clock();
 	print_result("OOP SEPARATELY", abcde, fghij, klmno,
@@ -265,8 +262,7 @@ int main(int argc, char** argv)
 	puts("TESTING OOP COMBINED CALCULATION");
 	begin = clock();
 	
-	for (unsigned long long i = 0; i < 128; ++i)
-		calculate_oop_combined(&abcde, &fghij, &klmno);
+	calculate_oop_combined(&abcde, &fghij, &klmno);
 	
 	end = clock();
 	print_result("OOP COMBINED", abcde, fghij, klmno,
@@ -278,11 +274,9 @@ int main(int argc, char** argv)
 	puts("TESTING DOD SEPARATELY CALCULATION");
 	begin = clock();
 
-	for (unsigned long long i = 0; i < 128; ++i) {
-		abcde = calculate_dod_abcde();
-		fghij = calculate_dod_fghij();
-		klmno = calculate_dod_klmno();
-	}
+	abcde = calculate_dod_abcde();
+	fghij = calculate_dod_fghij();
+	klmno = calculate_dod_klmno();
 
 	end = clock();
 	print_result("DOD SEPARATELY", abcde, fghij, klmno,
@@ -293,8 +287,7 @@ int main(int argc, char** argv)
 	puts("TESTING DOD COMBINED CALCULATION");
 	begin = clock();
 
-	for (unsigned long long i = 0; i < 128; ++i)
-		calculate_dod_combined(&abcde, &fghij, &klmno);
+	calculate_dod_combined(&abcde, &fghij, &klmno);
 
 	end = clock();
 	print_result("DOD COMBINED", abcde, fghij, klmno,
@@ -311,7 +304,7 @@ int main(int argc, char** argv)
 	struct thread_arg thrd_fghij_arg = { calculate_dod_fghij, &fghij };
 	struct thread_arg thrd_klmno_arg = { calculate_dod_klmno, &klmno };
 	pthread_create(&thrd_abcde,  NULL, (void*)thread_fun, &thrd_abcde_arg);
-	pthread_create(&thrd_fghij, NULL, (void*)thread_fun, &thrd_fghij_arg);
+	pthread_create(&thrd_fghij,  NULL, (void*)thread_fun, &thrd_fghij_arg);
 	thread_fun(&thrd_klmno_arg);
 	pthread_join(thrd_abcde, NULL);
 	pthread_join(thrd_fghij, NULL);
