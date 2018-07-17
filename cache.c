@@ -282,7 +282,7 @@ int main(int argc, char** argv)
 	print_result("DOD SEPARATELY", abcde, fghij, klmno,
 	             ((double)end - begin) / CLOCKS_PER_SEC);
 
-	/* DOD COMBINED ?? */
+	/* DOD COMBINED is awesome too */
 	dod_fill(base_nums[BN_DOD_COMBINED]);
 	puts("TESTING DOD COMBINED CALCULATION");
 	begin = clock();
