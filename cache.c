@@ -197,19 +197,55 @@ static void* INLINE thread_fun(const struct thread_arg* const ta)
 	return NULL;
 }
 
-static void print_result(const char* const info,
-                         const double abcde,
-                         const double fghij,
-                         const double klmno,
-                         const double secs)
+static void run_test(const char* const test_info, void(*const test_fun)(double*,double*,double*))
 {
+	double abcde, fghij, klmno;
+	const clock_t begin = clock();
+	test_fun(&abcde, &fghij, &klmno);
+	const clock_t end = clock();
+	const double secs = ((double)end - begin) / CLOCKS_PER_SEC;
 	printf("TEST: %s\n"
 	       "ABCDE: %lf\n"
 	       "FGHIJ: %lf\n"
 	       "KLMNO: %lf\n"
-	       "TIME: %lf secs\n"
+	       "TIME: %.3lf secs\n"
 	       "-----------------------------------\n",
-	       info, abcde, fghij, klmno, secs);
+	       test_info, abcde, fghij, klmno, secs);
+}
+
+
+static void test_fun_oop_separately(double* const abcde,
+                                    double* const fghij,
+                                    double* const klmno)
+{
+	*abcde = calculate_oop_abcde();
+	*fghij = calculate_oop_fghij();
+	*klmno = calculate_oop_klmno();
+}
+
+
+static void test_fun_dod_separately(double* const abcde,
+                                    double* const fghij,
+                                    double* const klmno)
+{
+	*abcde = calculate_dod_abcde();
+	*fghij = calculate_dod_fghij();
+	*klmno = calculate_dod_klmno();
+}
+
+static void test_fun_dod_multithreaded(double* const abcde,
+                                       double* const fghij,
+                                       double* const klmno)
+{
+	pthread_t thrd_abcde, thrd_fghij, thrd_klmno;
+	struct thread_arg thrd_abcde_arg = { calculate_dod_abcde, abcde };
+	struct thread_arg thrd_fghij_arg = { calculate_dod_fghij, fghij };
+	struct thread_arg thrd_klmno_arg = { calculate_dod_klmno, klmno };
+	pthread_create(&thrd_abcde,  NULL, (void*)thread_fun, &thrd_abcde_arg);
+	pthread_create(&thrd_fghij,  NULL, (void*)thread_fun, &thrd_fghij_arg);
+	thread_fun(&thrd_klmno_arg);
+	pthread_join(thrd_abcde, NULL);
+	pthread_join(thrd_fghij, NULL);
 }
 
 
@@ -240,78 +276,30 @@ int main(int argc, char** argv)
 
 	alloc_data(strtoll(argv[6], NULL, 10));
 
-	volatile clock_t begin, end;
-	double abcde = 0, fghij = 0, klmno = 0;
-
 	/* OOP data layout is bad if we want to calculate data sets separately */
 	oop_fill(base_nums[BN_OOP_SEPARATELY]);
 	puts("TESTING OOP SEPARATELY CALCULATION");
-	begin = clock();
-	
-	abcde = calculate_oop_abcde();
-	fghij = calculate_oop_fghij();
-	klmno = calculate_oop_klmno();
-	
-	end = clock();
-	print_result("OOP SEPARATELY", abcde, fghij, klmno,
-	             ((double)end - begin) / CLOCKS_PER_SEC);
-
+	run_test("OOP SEPARATELY CALCULATION", test_fun_oop_separately);
 
 	/* but OOP data layout is good if we want all the data at the same time */
 	oop_fill(base_nums[BN_OOP_COMBINED]);
 	puts("TESTING OOP COMBINED CALCULATION");
-	begin = clock();
+	run_test("OOP COMBINED CALCULATION", calculate_oop_combined);
 	
-	calculate_oop_combined(&abcde, &fghij, &klmno);
-	
-	end = clock();
-	print_result("OOP COMBINED", abcde, fghij, klmno,
-	             ((double)end - begin) / CLOCKS_PER_SEC);
-
-
 	/* DOD data layout is great if we want to calculate data sets separately */
 	dod_fill(base_nums[BN_DOD_SEPARATELY]);
 	puts("TESTING DOD SEPARATELY CALCULATION");
-	begin = clock();
-
-	abcde = calculate_dod_abcde();
-	fghij = calculate_dod_fghij();
-	klmno = calculate_dod_klmno();
-
-	end = clock();
-	print_result("DOD SEPARATELY", abcde, fghij, klmno,
-	             ((double)end - begin) / CLOCKS_PER_SEC);
-
+	run_test("DOD SEPARATELY CALCULATION", test_fun_dod_separately);
+	
 	/* DOD COMBINED is awesome too */
 	dod_fill(base_nums[BN_DOD_COMBINED]);
 	puts("TESTING DOD COMBINED CALCULATION");
-	begin = clock();
-
-	calculate_dod_combined(&abcde, &fghij, &klmno);
-
-	end = clock();
-	print_result("DOD COMBINED", abcde, fghij, klmno,
-	             ((double)end - begin) / CLOCKS_PER_SEC);
-
+	run_test("DOD COMBINED CALCULATION", calculate_dod_combined);
 
 	/* DOD data layout is good for multi-threading */
 	dod_fill(base_nums[BN_DOD_MULTITHREAD]);
 	puts("TESTING DOD SEPARATELY MULTI-THREADED CALCULATION");
-	begin = clock();
-
-	pthread_t thrd_abcde, thrd_fghij, thrd_klmno;
-	struct thread_arg thrd_abcde_arg = { calculate_dod_abcde, &abcde };
-	struct thread_arg thrd_fghij_arg = { calculate_dod_fghij, &fghij };
-	struct thread_arg thrd_klmno_arg = { calculate_dod_klmno, &klmno };
-	pthread_create(&thrd_abcde,  NULL, (void*)thread_fun, &thrd_abcde_arg);
-	pthread_create(&thrd_fghij,  NULL, (void*)thread_fun, &thrd_fghij_arg);
-	thread_fun(&thrd_klmno_arg);
-	pthread_join(thrd_abcde, NULL);
-	pthread_join(thrd_fghij, NULL);
-
-	end = clock();
-	print_result("DOD SEPARATELY MULTI-THREADED", abcde, fghij, klmno,
-	             ((double)end - begin) / CLOCKS_PER_SEC);
+	run_test("DOD MULTI-THREADED CALCULATION", test_fun_dod_multithreaded);
 
 	free_data();
 
