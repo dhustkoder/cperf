@@ -6,9 +6,6 @@
 //#include <pthread.h>
 
 
-#define INLINE
-
-
 struct thread_arg {
 	double (*const fun)(void);
 	double* const dest; 
@@ -71,7 +68,7 @@ static void dod_fill(int base_num)
 
 }
 
-static double INLINE calculate_oop_abcde(void)
+static double calculate_oop_abcde(void)
 {
 	double result = 0;
 
@@ -81,7 +78,7 @@ static double INLINE calculate_oop_abcde(void)
 	return result;
 }
 
-static double INLINE calculate_oop_fghij(void)
+static double calculate_oop_fghij(void)
 {
 	double result = 0;
 
@@ -91,7 +88,7 @@ static double INLINE calculate_oop_fghij(void)
 	return result;
 }
 
-static double INLINE calculate_oop_klmno(void)
+static double calculate_oop_klmno(void)
 {
 	double result = 0;
 
@@ -101,7 +98,7 @@ static double INLINE calculate_oop_klmno(void)
 	return result;
 }
 
-static void INLINE calculate_oop_combined(double* const abcde,
+static void calculate_oop_combined(double* const abcde,
                                           double* const fghij,
                                           double* const klmno)
 {
@@ -116,7 +113,7 @@ static void INLINE calculate_oop_combined(double* const abcde,
 	*klmno = k;
 }
 
-static double INLINE calculate_dod_abcde(void)
+static double calculate_dod_abcde(void)
 {
 	double result = 0;
 	
@@ -127,7 +124,7 @@ static double INLINE calculate_dod_abcde(void)
 }
 
 
-static double INLINE calculate_dod_fghij(void)
+static double calculate_dod_fghij(void)
 {
 	double result = 0;
 	
@@ -142,7 +139,7 @@ static double INLINE calculate_dod_fghij(void)
 	return result;
 }
 
-static double INLINE calculate_dod_klmno(void)
+static double calculate_dod_klmno(void)
 {
 	double result = 0;
 	
@@ -157,7 +154,7 @@ static double INLINE calculate_dod_klmno(void)
 	return result;
 }
 
-static void INLINE calculate_dod_combined(double* const abcde,
+static void calculate_dod_combined(double* const abcde,
                                           double* const fghij,
                                           double* const klmno)
 {
@@ -189,7 +186,7 @@ static void INLINE calculate_dod_combined(double* const abcde,
 
 }
 
-static void* INLINE thread_fun(const struct thread_arg* const ta)
+static void* thread_fun(const struct thread_arg* const ta)
 {
 	double r = 0;
 	r = ta->fun();
