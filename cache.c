@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <pthread.h>
+//#include <pthread.h>
 
 
 #define INLINE
@@ -233,6 +233,7 @@ static void test_fun_dod_separately(double* const abcde,
 	*klmno = calculate_dod_klmno();
 }
 
+/*
 static void test_fun_dod_multithreaded(double* const abcde,
                                        double* const fghij,
                                        double* const klmno)
@@ -247,15 +248,15 @@ static void test_fun_dod_multithreaded(double* const abcde,
 	pthread_join(thrd_abcde, NULL);
 	pthread_join(thrd_fghij, NULL);
 }
-
+*/
 
 int main(int argc, char** argv)
 {
-	if (argc < 6) {
+	if (argc < 5) {
 		fprintf(stderr, 
 		        "Usage: %s [oop separately base num] [oop combined base num] "
 		        "[dod separately base num] [dod combined base num] "
-		        "[dod separately multi-thread base num] [buffer size]\n", argv[0]);
+		        "[buffer size]\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
@@ -270,11 +271,10 @@ int main(int argc, char** argv)
 		[BN_OOP_SEPARATELY] = strtoll(argv[1], NULL, 10),
 		[BN_OOP_COMBINED] = strtoll(argv[2], NULL, 10),
 		[BN_DOD_SEPARATELY] = strtoll(argv[3], NULL, 10),
-		[BN_DOD_COMBINED] = strtoll(argv[4], NULL, 10),
-		[BN_DOD_MULTITHREAD] = strtoll(argv[5], NULL, 10)
+		[BN_DOD_COMBINED] = strtoll(argv[4], NULL, 10)
 	};
 
-	alloc_data(strtoll(argv[6], NULL, 10));
+	alloc_data(strtoll(argv[5], NULL, 10));
 
 	/* OOP data layout is bad if we want to calculate data sets separately */
 	oop_fill(base_nums[BN_OOP_SEPARATELY]);
@@ -297,9 +297,11 @@ int main(int argc, char** argv)
 	run_test("DOD COMBINED CALCULATION", calculate_dod_combined);
 
 	/* DOD data layout is good for multi-threading */
+	/*
 	dod_fill(base_nums[BN_DOD_MULTITHREAD]);
 	puts("TESTING DOD SEPARATELY MULTI-THREADED CALCULATION");
 	run_test("DOD MULTI-THREADED CALCULATION", test_fun_dod_multithreaded);
+	*/
 
 	free_data();
 

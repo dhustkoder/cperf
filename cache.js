@@ -153,10 +153,13 @@ function calculate_dod_combined()
 	return {abcde: a, fghij: f, klmno: k};
 }
 
-
-function print_result(info, abcde, fghij, klmno, ms)
+function run_test(test_info, test_fun)
 {
-	console.log("TEST: ", info, "\n",
+	const begin = new Date();
+	const {abcde, fghij, klmno } = test_fun();
+	const end = new Date();
+	const ms = end.getTime() - begin.getTime();
+	console.log("TEST: ", test_info, "\n",
 	            "ABCDE: ", abcde, "\n",
 	            "FGHIJ: ", fghij, "\n",
 	            "KLMNO: ", klmno, "\n",
@@ -166,11 +169,11 @@ function print_result(info, abcde, fghij, klmno, ms)
 
 
 
-if (process.argv.length < 7) {
+if (process.argv.length < 6) {
 	console.log(
 	        "Usage: ", process.argv[1], " [oop separately base num] [oop combined base num] ",
 	        "[dod separately base num] [dod combined base num] ",
-	        "[dod separately multi-thread base num] [buffer size]");
+	        "[buffer size]");
 	process.exit();
 }
 
@@ -178,57 +181,41 @@ base_nums = {
 	BN_OOP_SEPARATELY: Number(process.argv[2]),
 	BN_OOP_COMBINED: Number(process.argv[3]),
 	BN_DOD_SEPARATELY: Number(process.argv[4]),
-	BN_DOD_COMBINED: Number(process.argv[5]),
-	BN_DOD_MULTITHREAD: Number(process.argv[6])
+	BN_DOD_COMBINED: Number(process.argv[5])
 };
 
-alloc_data(Number(process.argv[7]));
-
-begin = 0, end = 0;
-abcde = 0.0, fghij = 0.0, klmno = 0.0;
+alloc_data(Number(process.argv[6]));
 
 /* OOP data layout is bad if we want to calculate data sets separately */
 oop_fill(base_nums.BN_OOP_SEPARATELY);
 console.log("TESTING OOP SEPARATELY CALCULATION");
-begin = new Date();
-
-abcde = calculate_oop_abcde();
-fghij = calculate_oop_fghij();
-klmno = calculate_oop_klmno();
-
-end = new Date();
-print_result("OOP SEPARATELY", abcde, fghij, klmno, end.getTime() - begin.getTime());
-
+run_test("OOP SEPARATELY", () => {
+	return {
+		abcde: calculate_oop_abcde(),
+		fghij: calculate_oop_fghij(),
+		klmno: calculate_oop_klmno()
+	}
+});
 
 /* but OOP data layout is good if we want all the data at the same time */
 oop_fill(base_nums.BN_OOP_COMBINED);
 console.log("TESTING OOP COMBINED CALCULATION");
-begin = new Date();
-
-oop_combined_result = calculate_oop_combined();
-
-end = new Date();
-print_result("OOP COMBINED", oop_combined_result.abcde, oop_combined_result.fghij, oop_combined_result.klmno, end.getTime() - begin.getTime());
-
+run_test("OOP COMBINED", calculate_oop_combined);
 
 /* DOD data layout is great if we want to calculate data sets separately */
 dod_fill(base_nums.BN_DOD_SEPARATELY);
 console.log("TESTING DOD SEPARATELY CALCULATION");
-begin = new Date();
-
-abcde = calculate_dod_abcde();
-fghij = calculate_dod_fghij();
-klmno = calculate_dod_klmno();
-
-end = new Date();
-print_result("DOD SEPARATELY", abcde, fghij, klmno, end.getTime() - begin.getTime());
+run_test("DOD SEPARATELY", () => {
+	return {
+		abcde: calculate_dod_abcde(),
+		fghij: calculate_dod_fghij(),
+		klmno: calculate_dod_klmno()
+	}
+});
 
 /* DOD COMBINED is awesome too */
 dod_fill(base_nums.BN_DOD_COMBINED);
 console.log("TESTING DOD COMBINED CALCULATION");
-begin = new Date();
+run_test("DOD COMBINED", calculate_dod_combined);
 
-dod_combined_result = calculate_dod_combined();
 
-end = new Date();
-print_result("DOD COMBINED", dod_combined_result.abcde, dod_combined_result.fghij, dod_combined_result.klmno, end.getTime() - begin.getTime());
