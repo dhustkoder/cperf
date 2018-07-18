@@ -252,7 +252,7 @@ static void test_fun_dod_multithreaded(double* const abcde,
 
 int main(int argc, char** argv)
 {
-	if (argc < 5) {
+	if (argc < 6) {
 		fprintf(stderr, 
 		        "Usage: %s [oop separately base num] [oop combined base num] "
 		        "[dod separately base num] [dod combined base num] "
@@ -260,39 +260,30 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	enum base_nums_index {
-		BN_OOP_SEPARATELY,
-		BN_OOP_COMBINED,
-		BN_DOD_SEPARATELY,
-		BN_DOD_COMBINED,
-		BN_DOD_MULTITHREAD
-	};
-	const int base_nums[] = {
-		[BN_OOP_SEPARATELY] = strtoll(argv[1], NULL, 10),
-		[BN_OOP_COMBINED] = strtoll(argv[2], NULL, 10),
-		[BN_DOD_SEPARATELY] = strtoll(argv[3], NULL, 10),
-		[BN_DOD_COMBINED] = strtoll(argv[4], NULL, 10)
-	};
+	const int oop_separately_base_num = strtoll(argv[1], NULL, 10);
+	const int oop_combined_base_num = strtoll(argv[2], NULL, 10);
+	const int dod_separately_base_num = strtoll(argv[3], NULL, 10);
+	const int dod_combined_base_num = strtoll(argv[4], NULL, 10);
 
 	alloc_data(strtoll(argv[5], NULL, 10));
 
 	/* OOP data layout is bad if we want to calculate data sets separately */
-	oop_fill(base_nums[BN_OOP_SEPARATELY]);
+	oop_fill(oop_separately_base_num);
 	puts("TESTING OOP SEPARATELY CALCULATION");
 	run_test("OOP SEPARATELY CALCULATION", test_fun_oop_separately);
 
 	/* but OOP data layout is good if we want all the data at the same time */
-	oop_fill(base_nums[BN_OOP_COMBINED]);
+	oop_fill(oop_combined_base_num);
 	puts("TESTING OOP COMBINED CALCULATION");
 	run_test("OOP COMBINED CALCULATION", calculate_oop_combined);
 	
 	/* DOD data layout is great if we want to calculate data sets separately */
-	dod_fill(base_nums[BN_DOD_SEPARATELY]);
+	dod_fill(dod_separately_base_num);
 	puts("TESTING DOD SEPARATELY CALCULATION");
 	run_test("DOD SEPARATELY CALCULATION", test_fun_dod_separately);
 	
 	/* DOD COMBINED is awesome too */
-	dod_fill(base_nums[BN_DOD_COMBINED]);
+	dod_fill(dod_combined_base_num);
 	puts("TESTING DOD COMBINED CALCULATION");
 	run_test("DOD COMBINED CALCULATION", calculate_dod_combined);
 
