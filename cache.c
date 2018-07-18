@@ -99,8 +99,8 @@ static double calculate_oop_klmno(void)
 }
 
 static void calculate_oop_combined(double* const abcde,
-                                          double* const fghij,
-                                          double* const klmno)
+                                   double* const fghij,
+                                   double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
 	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
@@ -155,8 +155,8 @@ static double calculate_dod_klmno(void)
 }
 
 static void calculate_dod_combined(double* const abcde,
-                                          double* const fghij,
-                                          double* const klmno)
+                                   double* const fghij,
+                                   double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
 	
