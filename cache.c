@@ -188,9 +188,7 @@ static void calculate_dod_combined(double* const abcde,
 
 static void* thread_fun(const struct thread_arg* const ta)
 {
-	double r = 0;
-	r = ta->fun();
-	*ta->dest = r;
+	*ta->dest = ta->fun();
 	return NULL;
 }
 
