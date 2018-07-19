@@ -188,14 +188,6 @@ static void calculate_dod_combined(double* const abcde,
 
 }
 
-/*
-static void* thread_fun(const struct thread_arg* const ta)
-{
-	*ta->dest = ta->fun();
-	return NULL;
-}
-*/
-
 static void run_test(const char* const test_info, void(*const test_fun)(double*,double*,double*))
 {
 	double abcde, fghij, klmno;
@@ -233,6 +225,12 @@ static void test_fun_dod_separately(double* const abcde,
 }
 
 /*
+static void* thread_fun(const struct thread_arg* const ta)
+{
+	*ta->dest = ta->fun();
+	return NULL;
+}
+
 static void test_fun_dod_multithreaded(double* const abcde,
                                        double* const fghij,
                                        double* const klmno)
