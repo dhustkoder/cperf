@@ -36,7 +36,7 @@ static void free_data(void)
 	free(oop_data);
 }
 
-static void oop_fill(int base_num)
+static void oop_fill(const int base_num)
 {
 
 	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
@@ -46,7 +46,7 @@ static void oop_fill(int base_num)
 	}
 }
 
-static void dod_fill(int base_num)
+static void dod_fill(const int base_num)
 {
 	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
 		dod_data[i] = base_num;
