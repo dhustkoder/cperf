@@ -88,7 +88,7 @@ function calculate_oop_combined()
 function calculate_dod_abcde()
 {
 	result = 0.0;
-	len = BUFFER_SIZE * 5;
+	const len = BUFFER_SIZE * 5;
 	for (i = 0; i < len; i += 5)
 		result += dod_data[i] + dod_data[i + 1] + dod_data[i + 2] + dod_data[i + 3] + dod_data[i + 4];
 
@@ -99,7 +99,7 @@ function calculate_dod_abcde()
 function calculate_dod_fghij()
 {
 	result = 0.0;
-	len = BUFFER_SIZE * 5;
+	const len = BUFFER_SIZE * 5;
 	for (i = 0; i < len; i += 5) {
 		result += dod_data[len + i] +
 		          dod_data[len + i + 1] +
@@ -114,7 +114,7 @@ function calculate_dod_fghij()
 function calculate_dod_klmno()
 {
 	result = 0.0;
-	len = BUFFER_SIZE * 5;
+	const len = BUFFER_SIZE * 5;
 	for (i = 0; i < len; i += 5) {
 		result += dod_data[len * 2 + i] +
 		          dod_data[len * 2 + i + 1] +
@@ -129,25 +129,25 @@ function calculate_dod_klmno()
 function calculate_dod_combined()
 {
 	a = 0.0, f = 0.0, k = 0.0;
-	
-	for (i = 0; i < BUFFER_SIZE * 5; i += 5) {
+	const len = BUFFER_SIZE * 5;
+	for (i = 0; i < len; i += 5) {
 		a += dod_data[i] +
-		     dod_data[BUFFER_SIZE * 5 + i] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i] +
+		     dod_data[len + i] +
+		     dod_data[len * 2 + i] +
 		     dod_data[i + 1] +
-		     dod_data[BUFFER_SIZE * 5 + i + 1];
+		     dod_data[len + i + 1];
 
-		f += dod_data[BUFFER_SIZE * 5 * 2 + i + 1] +
+		f += dod_data[len * 2 + i + 1] +
 		     dod_data[i + 2] +
-		     dod_data[BUFFER_SIZE * 5 + i + 2] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 2] +
+		     dod_data[len + i + 2] +
+		     dod_data[len * 2 + i + 2] +
 		     dod_data[i + 3];
 
-		k += dod_data[BUFFER_SIZE * 5 + i + 3] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 3] +
+		k += dod_data[len + i + 3] +
+		     dod_data[len * 2 + i + 3] +
 		     dod_data[i + 4] +
-		     dod_data[BUFFER_SIZE * 5 + i + 4] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 4];
+		     dod_data[len + i + 4] +
+		     dod_data[len * 2 + i + 4];
 	}
 
 	return {abcde: a, fghij: f, klmno: k};

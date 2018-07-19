@@ -5,11 +5,12 @@
 #include <time.h>
 //#include <pthread.h>
 
-
+/*
 struct thread_arg {
 	double (*const fun)(void);
 	double* const dest; 
 };
+*/
 
 static struct oop_data {
 	double a, b, c, d, e;
@@ -20,6 +21,7 @@ static struct oop_data {
 static double* dod_data = NULL;
 
 static unsigned long long BUFFER_SIZE = 0;
+
 
 static void alloc_data(unsigned long long buffer_size)
 {
@@ -116,8 +118,8 @@ static void calculate_oop_combined(double* const abcde,
 static double calculate_dod_abcde(void)
 {
 	double result = 0;
-	
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5)
+	const unsigned long long len = BUFFER_SIZE * 5;
+	for (unsigned long long i = 0; i < len; i += 5)
 		result += dod_data[i] + dod_data[i + 1] + dod_data[i + 2] + dod_data[i + 3] + dod_data[i + 4];
 
 	return result;
@@ -127,13 +129,13 @@ static double calculate_dod_abcde(void)
 static double calculate_dod_fghij(void)
 {
 	double result = 0;
-	
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
-		result += dod_data[BUFFER_SIZE * 5 + i] +
-		          dod_data[BUFFER_SIZE * 5 + i + 1] +
-		          dod_data[BUFFER_SIZE * 5 + i + 2] +
-		          dod_data[BUFFER_SIZE * 5 + i + 3] +
-		          dod_data[BUFFER_SIZE * 5 + i + 4];
+	const unsigned long long len = BUFFER_SIZE * 5;
+	for (unsigned long long i = 0; i < len; i += 5) {
+		result += dod_data[len + i] +
+		          dod_data[len + i + 1] +
+		          dod_data[len + i + 2] +
+		          dod_data[len + i + 3] +
+		          dod_data[len + i + 4];
 	}
 
 	return result;
@@ -142,13 +144,13 @@ static double calculate_dod_fghij(void)
 static double calculate_dod_klmno(void)
 {
 	double result = 0;
-	
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
-		result += dod_data[BUFFER_SIZE * 5 * 2 + i] +
-		          dod_data[BUFFER_SIZE * 5 * 2 + i + 1] +
-		          dod_data[BUFFER_SIZE * 5 * 2 + i + 2] +
-		          dod_data[BUFFER_SIZE * 5 * 2 + i + 3] +
-		          dod_data[BUFFER_SIZE * 5 * 2 + i + 4];
+	const unsigned long long len = BUFFER_SIZE * 5;
+	for (unsigned long long i = 0; i < len; i += 5) {
+		result += dod_data[len * 2 + i] +
+		          dod_data[len * 2 + i + 1] +
+		          dod_data[len * 2 + i + 2] +
+		          dod_data[len * 2 + i + 3] +
+		          dod_data[len * 2 + i + 4];
 	}
 
 	return result;
@@ -159,25 +161,25 @@ static void calculate_dod_combined(double* const abcde,
                                    double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
-	
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
+	const unsigned long long len = BUFFER_SIZE * 5;
+	for (unsigned long long i = 0; i < len; i += 5) {
 		a += dod_data[i] +
-		     dod_data[BUFFER_SIZE * 5 + i] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i] +
+		     dod_data[len + i] +
+		     dod_data[len * 2 + i] +
 		     dod_data[i + 1] +
-		     dod_data[BUFFER_SIZE * 5 + i + 1];
+		     dod_data[len + i + 1];
 
-		f += dod_data[BUFFER_SIZE * 5 * 2 + i + 1] +
+		f += dod_data[len * 2 + i + 1] +
 		     dod_data[i + 2] +
-		     dod_data[BUFFER_SIZE * 5 + i + 2] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 2] +
+		     dod_data[len + i + 2] +
+		     dod_data[len * 2 + i + 2] +
 		     dod_data[i + 3];
 
-		k += dod_data[BUFFER_SIZE * 5 + i + 3] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 3] +
+		k += dod_data[len + i + 3] +
+		     dod_data[len * 2 + i + 3] +
 		     dod_data[i + 4] +
-		     dod_data[BUFFER_SIZE * 5 + i + 4] +
-		     dod_data[BUFFER_SIZE * 5 * 2 + i + 4];
+		     dod_data[len + i + 4] +
+		     dod_data[len * 2 + i + 4];
 	}
 
 	*abcde = a;
@@ -186,11 +188,13 @@ static void calculate_dod_combined(double* const abcde,
 
 }
 
+/*
 static void* thread_fun(const struct thread_arg* const ta)
 {
 	*ta->dest = ta->fun();
 	return NULL;
 }
+*/
 
 static void run_test(const char* const test_info, void(*const test_fun)(double*,double*,double*))
 {
