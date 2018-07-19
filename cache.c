@@ -20,14 +20,14 @@ static struct oop_data {
 
 static double* dod_data = NULL;
 
-static unsigned long long BUFFER_SIZE = 0;
+static unsigned long long buffer_size = 0;
 
 
-static void alloc_data(unsigned long long buffer_size)
+static void alloc_data(const unsigned long long size)
 {
-	BUFFER_SIZE = buffer_size;
-	oop_data = malloc(sizeof(struct oop_data) * BUFFER_SIZE);
-	dod_data = malloc(sizeof(double) * 5 * 3 * BUFFER_SIZE);
+	buffer_size = size;
+	oop_data = malloc(sizeof(struct oop_data) * size);
+	dod_data = malloc(sizeof(double) * 5 * 3 * size);
 }
 
 static void free_data(void)
@@ -39,7 +39,7 @@ static void free_data(void)
 static void oop_fill(const int base_num)
 {
 
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
+	for (unsigned long long i = 0; i < buffer_size; ++i) {
 		oop_data[i].a = oop_data[i].b = oop_data[i].c = oop_data[i].d = oop_data[i].e = base_num;
 		oop_data[i].f = oop_data[i].g = oop_data[i].h = oop_data[i].i = oop_data[i].j = base_num * 2;
 		oop_data[i].k = oop_data[i].l = oop_data[i].m = oop_data[i].n = oop_data[i].o = base_num * 3;
@@ -48,24 +48,25 @@ static void oop_fill(const int base_num)
 
 static void dod_fill(const int base_num)
 {
-	for (unsigned long long i = 0; i < BUFFER_SIZE * 5; i += 5) {
+	const unsigned long long len = buffer_size * 5;
+	for (unsigned long long i = 0; i < len; i += 5) {
 		dod_data[i] = base_num;
 		dod_data[i + 1] = base_num;
 		dod_data[i + 2] = base_num;
 		dod_data[i + 3] = base_num;
 		dod_data[i + 4] = base_num;
 
-		dod_data[BUFFER_SIZE * 5 + i] = base_num * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 1] = base_num * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 2] = base_num * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 3] = base_num * 2;
-		dod_data[BUFFER_SIZE * 5 + i + 4] = base_num * 2;
+		dod_data[len + i] = base_num * 2;
+		dod_data[len + i + 1] = base_num * 2;
+		dod_data[len + i + 2] = base_num * 2;
+		dod_data[len + i + 3] = base_num * 2;
+		dod_data[len + i + 4] = base_num * 2;
 
-		dod_data[BUFFER_SIZE * 5 * 2 + i] = base_num * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 1] = base_num * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 2] = base_num * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 3] = base_num * 3;
-		dod_data[BUFFER_SIZE * 5 * 2 + i + 4] = base_num * 3;
+		dod_data[len * 2 + i] = base_num * 3;
+		dod_data[len * 2 + i + 1] = base_num * 3;
+		dod_data[len * 2 + i + 2] = base_num * 3;
+		dod_data[len * 2 + i + 3] = base_num * 3;
+		dod_data[len * 2 + i + 4] = base_num * 3;
 	}
 
 }
@@ -74,7 +75,7 @@ static double calculate_oop_abcde(void)
 {
 	double result = 0;
 
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i)
+	for (unsigned long long i = 0; i < buffer_size; ++i)
 		result += oop_data[i].a + oop_data[i].b + oop_data[i].c + oop_data[i].d + oop_data[i].e;
 
 	return result;
@@ -84,7 +85,7 @@ static double calculate_oop_fghij(void)
 {
 	double result = 0;
 
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i)
+	for (unsigned long long i = 0; i < buffer_size; ++i)
 		result += oop_data[i].f + oop_data[i].g + oop_data[i].h + oop_data[i].i + oop_data[i].j;
 
 	return result;
@@ -94,7 +95,7 @@ static double calculate_oop_klmno(void)
 {
 	double result = 0;
 
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i)
+	for (unsigned long long i = 0; i < buffer_size; ++i)
 		result += oop_data[i].k + oop_data[i].l + oop_data[i].m + oop_data[i].n + oop_data[i].o;
 
 	return result;
@@ -105,7 +106,7 @@ static void calculate_oop_combined(double* const abcde,
                                    double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
-	for (unsigned long long i = 0; i < BUFFER_SIZE; ++i) {
+	for (unsigned long long i = 0; i < buffer_size; ++i) {
 		a += oop_data[i].a + oop_data[i].f + oop_data[i].k + oop_data[i].b + oop_data[i].g;
 		f += oop_data[i].l + oop_data[i].c + oop_data[i].h + oop_data[i].m + oop_data[i].d;
 		k += oop_data[i].i + oop_data[i].n + oop_data[i].e + oop_data[i].j + oop_data[i].o;
@@ -118,7 +119,7 @@ static void calculate_oop_combined(double* const abcde,
 static double calculate_dod_abcde(void)
 {
 	double result = 0;
-	const unsigned long long len = BUFFER_SIZE * 5;
+	const unsigned long long len = buffer_size * 5;
 	for (unsigned long long i = 0; i < len; i += 5)
 		result += dod_data[i] + dod_data[i + 1] + dod_data[i + 2] + dod_data[i + 3] + dod_data[i + 4];
 
@@ -129,7 +130,7 @@ static double calculate_dod_abcde(void)
 static double calculate_dod_fghij(void)
 {
 	double result = 0;
-	const unsigned long long len = BUFFER_SIZE * 5;
+	const unsigned long long len = buffer_size * 5;
 	for (unsigned long long i = 0; i < len; i += 5) {
 		result += dod_data[len + i] +
 		          dod_data[len + i + 1] +
@@ -144,7 +145,7 @@ static double calculate_dod_fghij(void)
 static double calculate_dod_klmno(void)
 {
 	double result = 0;
-	const unsigned long long len = BUFFER_SIZE * 5;
+	const unsigned long long len = buffer_size * 5;
 	for (unsigned long long i = 0; i < len; i += 5) {
 		result += dod_data[len * 2 + i] +
 		          dod_data[len * 2 + i + 1] +
@@ -161,7 +162,7 @@ static void calculate_dod_combined(double* const abcde,
                                    double* const klmno)
 {
 	double a = 0, f = 0, k = 0;
-	const unsigned long long len = BUFFER_SIZE * 5;
+	const unsigned long long len = buffer_size * 5;
 	for (unsigned long long i = 0; i < len; i += 5) {
 		a += dod_data[i] +
 		     dod_data[len + i] +
